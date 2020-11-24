@@ -1,0 +1,4 @@
+In this lab, you will understand prerequistes required before starting deployment of Growth Stack Operator, including:
+
+- OpenShift Login
+- Deploying Cluster Logging
