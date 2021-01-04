@@ -4,16 +4,23 @@
 source bas-script-functions.bash
 source cr.properties
 
+requiredVersion="^.*4\.([0-9]{3,}|[3-9]?)?(\.[0-9]+.*)*$"
+requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
+
 
 logFile="bas-installation.log"
 touch "${logFile}"
 
-oc whoami
-if [[ $? -gt 0 ]]; then
-    echoRed "Login to Openshift before executing the script."
-	exit 1;
-fi
+validatePropertiesfile
 
+checkPropertyValuesprompt
+checkOCClientVersion
+
+status=$(oc whoami 2>&1)
+if [[ $? -gt 0 ]]; then
+    echoRed "Login to OpenShift to continue BAS Operator installation."
+        exit 1;
+fi
 
 displayStepHeader 1 "Create a new project"
 
