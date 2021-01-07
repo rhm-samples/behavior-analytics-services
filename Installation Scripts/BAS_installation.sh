@@ -88,7 +88,7 @@ oc create secret generic grafana-credentials --from-literal=grafana_username=${g
 displayStepHeader 8 "Create the key and cert for mtls secret"
 
 
-cd mtls/
+cd ~/mtls/
 cmdoutput=$(cfssl gencert -initca ca-csr.json | cfssljson -bare ca > /dev/null 2>&1)
 RETVAL=$?
 
@@ -144,7 +144,10 @@ spec:
   kafka:
     storage_class: "${storageClassKafka}"
     storage_size: "${storageSizeKafka}"
+    zookeeper_storage_class: "${storageClassZookeeper}"
+    zookeeper_storage_size: "${storageSizeZookeeper}"
   prometheus_scheduler_frequency: "${prometheusSchedulerFrequency}"
+  prometheus_metrics: []
   env_type: "${envType}"
 EOF
 
