@@ -31,6 +31,76 @@ function stepLog() {
   echo -e "STEP $1/15: $2"
 }
 
+function validatePropertiesfile(){
+  file="./cr.properties"
+  if [ -f "$file" ]
+  then
+    echo "$file found."
+    while IFS='=' read -r key value
+    do
+      key_name=$(echo $key | grep -v '^#')
+
+      if [[ -z "$key_name" || "$key_name" == " " || $key_name == " " ]];then
+        continue
+      fi
+      if [[ -z "${!key_name}" || "${!key_name}" == "" || ${!key_name} == "" ]]; then
+        echoRed "$key_name is empty"
+            exit 1
+      fi
+    done < "$file"
+  else
+    echoRed "$file not found."
+    exit 1
+  fi
+}
+
+
+function checkPropertyValuesprompt(){
+  echoBlue "Please check below Properties values and confirm to Continue with installation"
+  file="./cr.properties"
+
+  while IFS= read -r line
+  do
+    key_name=$(echo $line | grep -v '^#')
+
+    if [[ -z "$key_name" || "$key_name" == " " || $key_name == " " ]];then
+      continue
+    fi
+    echo "$line"
+  done < "$file"
+
+  echoBlue "Are you sure, you want to Continue with Installation? [Y/n]: "
+  read -r continueInstall </dev/tty
+  if [[ ! $continueInstall || $continueInstall = *[^Yy] ]]; then
+    echoRed "Aborting installation of Behavior Analytics Services Operator"
+    exit 0
+  fi
+}
+
+function checkOCServerVersion() {
+  currentOCServerVersion="$(oc version -o json | jq .serverVersion.gitVersion)"
+  echo $currentOCServerVersion
+  echo $requiredServerVersion
+  if ! [[ $currentOCServerVersion =~ $requiredServerVersion ]]; then
+    if [ "$currentOCServerVersion" = null ]; then
+      echoRed "Unsupported OpenShift Server version detected. Supported OpenShift Server versions are 1.16 and above."
+    else
+      echoRed "Unsupported OpenShift Server version $currentOCServerVersion detected. Supported OpenShift versions are 1.16 and above."
+    fi
+    exit 1
+  fi
+}
+
+
+function checkOCClientVersion() {
+  currentClientVersion="$(oc version -o json | jq .clientVersion.gitVersion)"
+  if ! [[ $currentClientVersion =~ $requiredVersion ]]; then
+    echoRed "Unsupported oc cli version $currentClientVersion detected. Supported oc cli versions are 4.3 and above."
+    exit 1
+  fi
+}
+
+
 function checkClusterServiceVersionSucceeded() {
 
 	retryCount=20
