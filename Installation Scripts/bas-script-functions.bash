@@ -101,6 +101,27 @@ function checkOCClientVersion() {
 }
 
 
+function createProject(){
+  existingns=$(oc get project "${projectName}" -no-headers --output=go-template={{.metadata.name}})
+
+  if [ "${existingns}" == "${projectName}" ]; then
+    echoYellow "Project ${existingns} already exists, do you want to continue BAS operator installation in the existing project? [Y/n]: "
+    read -r continueInstall </dev/tty
+    if [[ ! $continueInstall || $continueInstall = *[^Yy] ]]; then
+      echoRed "Aborting installation of BAS Operator, please set new value for Project in the cr.properties file"
+      exit 0;
+    fi
+  fi
+
+  oc new-project "${projectName}" &>>"${logFile}"
+
+  if [ $? -ne 0 ];then
+        echoRed "FAILED: Project: ${projectName} creation failed"
+        exit 1
+  fi
+}
+
+
 function checkClusterServiceVersionSucceeded() {
 
 	retryCount=20
