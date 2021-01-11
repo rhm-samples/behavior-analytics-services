@@ -23,8 +23,7 @@ if [[ $? -gt 0 ]]; then
 fi
 
 displayStepHeader 1 "Create a new project"
-
-oc new-project "${projectName}" &>>"${logFile}"
+createProject
 
 displayStepHeader 2 "Create an OperatorGroup object YAML file"
 
