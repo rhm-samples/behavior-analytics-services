@@ -135,7 +135,7 @@ function checkClusterServiceVersionSucceeded() {
 
 function checkDeploymentStatus() {
 
-	retryCount=40
+	retryCount=90
 	retries=0
 	check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /behavior-analytics-services-operator/ { print }' | awk -F' ' '{print $NF}')
 	until [[ $retries -eq $retryCount || $check_for_deployment_status = "Ready" ]]; do
