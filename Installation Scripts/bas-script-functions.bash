@@ -133,25 +133,6 @@ function checkClusterServiceVersionSucceeded() {
 	echo "$check_for_csv_success"
 }
 
-function createCerts() {
-
-	cd mtls/
-	cmdoutput=$(cfssl gencert -initca ca-csr.json | cfssljson -bare ca > /dev/null 2>&1)
-	RETVAL=$?
-	if [ RETVAL -gt 0 ]; then
-		certsCreated=1
-	else
-		cmdoutput=$(cfssl gencert -ca=ca.pem -ca-key=ca-key.pem  -config=ca-config.json -profile=client client-csr.json | cfssljson -bare client > /dev/null 2>&1)
-		RETVAL=$?
-		if [ RETVAL -eq 0 ]; then
-			certsCreated=0
-	    else
-			certsCreated=1
-		fi
-	fi
-	echo $certsCreated
-}
-
 function checkDeploymentStatus() {
 
 	retryCount=40
