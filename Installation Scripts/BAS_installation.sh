@@ -84,38 +84,7 @@ oc create secret generic database-credentials --from-literal=db_username=${dbuse
 oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" &>>"${logFile}"
 
 
-displayStepHeader 8 "Create the key and cert for mtls secret"
-
-
-cd ~/mtls/
-cmdoutput=$(cfssl gencert -initca ca-csr.json | cfssljson -bare ca > /dev/null 2>&1)
-RETVAL=$?
-
-if [[ RETVAL -gt 0 ]]; then
-	certsCreated=1
-else
-	cmdoutput=$(cfssl gencert -ca=ca.pem -ca-key=ca-key.pem  -config=ca-config.json -profile=client client-csr.json | cfssljson -bare client > /dev/null 2>&1)
-	RETVAL=$?
-	if [[ RETVAL -eq 0 ]]; then
-		certsCreated=0
-    else
-		certsCreated=1
-	fi
-fi
-echo $certsCreated
-if [[ "${certsCreated}" -eq 0 ]]; then
-	echoGreen "mtls Key and Certificate created successfully"
-else
-    echoRed "Failed to create Key and Certificate"
-	exit 1;
-fi
-
-cd ..
-
-displayStepHeader 9 "Create a secret named mtls-proxy-secret which has the client key and certificate to connect to IBM Proxy service."
-oc create secret tls mtls-proxy-secret --key ~/mtls/client-key.pem --cert ~/mtls/client.pem -n "${projectName}" &>> "${logFile}"
-
-displayStepHeader 10 "Create the yaml for FullDeployment instance."
+displayStepHeader 8 "Create the yaml for FullDeployment instance."
 
 
 cat <<EOF>full-deployment.yaml
@@ -124,6 +93,7 @@ kind: FullDeployment
 metadata:
   name: fulldeployment
 spec:
+  allowed_domains: "*"
   db_archive:
     frequency: '@monthly'
     retention_age: 6
@@ -150,7 +120,7 @@ spec:
   env_type: "${envType}"
 EOF
 
-displayStepHeader 11 "Install the Deployment"
+displayStepHeader 9 "Install the Deployment"
 
 oc create -f full-deployment.yaml &>>"${logFile}"
 
@@ -165,7 +135,7 @@ else
 	exit 1;
 fi
 
-displayStepHeader 12 "Generate an API Key to use it for authentication"
+displayStepHeader 10 "Generate an API Key to use it for authentication"
 
 cat <<EOF>api-key.yaml
 apiVersion: bas.ibm.com/v1
@@ -177,7 +147,7 @@ spec:
 EOF
 
 
-displayStepHeader 13 "Create the API Key"
+displayStepHeader 11 "Create the API Key"
 
 oc create -f api-key.yaml
   
@@ -188,7 +158,7 @@ bas_endpoint_url=https://$(oc get routes bas-endpoint -n "${projectName}" |awk '
 grafana_dashboard_url=https://$(oc get routes grafana-route -n "${projectName}" |awk 'NR==2 {print $2}')
 
 
-displayStepHeader 14 "Get the API key value and the URLs"
+displayStepHeader 12 "Get the API key value and the URLs"
 echo "===========API KEY=============="
 echoYellow $check_for_key
 echo "===========BAS Endpoint URL=============="
@@ -196,4 +166,3 @@ echoYellow $bas_endpoint_url
 echo "===========Grafana URL=============="
 echoYellow $grafana_dashboard_url
 
-displayStepHeader 15 "Share the ~/mtls/client-key.pem and ~/mtls/cleint.pem with edge@ibm.com"
