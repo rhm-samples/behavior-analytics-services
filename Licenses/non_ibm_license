@@ -1,0 +1,76 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+NON-IBM-LICENSE FOR BEHAVIOR ANALYTICS SERVICES
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+TABLE OF CONTENTS
+
+THIS NON-IBM-LICENSE FILE CONSISTS OF THE FOLLOWING SECTIONS:
+
+CC-BY 3.0
+CC-BY 4.0
+CC-BY-SA 2.5
+JSON license
+LGPL 2.0, 2.1
+REDHAT UNIVERSAL BASE IMAGE v8.0 and v8.2
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATIVE COMMONS ATTRIBUTION 3.0
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
+
+spdx-exceptions https://github.com/kemitchell/spdx-exceptions.json
+spdx-expression-parse https://github.com/jslicense/spdx-expression-parse.js
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATIVE COMMONS ATTRIBUTION 4.0
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
+
+caniuse-lite: 1.0.30001157  https://github.com/ben-eb/caniuse-lite
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 2.5 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/2.5/legalcode
+
+postcss-reduce-initial :4.0.3  https://github.com/cssnano/cssnano
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GNU Lesser General Public License Version version 2.0
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://www.gnu.org/licenses/old-licenses/lgpl-2.0.en.html
+jsdom: 14.1.0, 11.12.0,16.4.0 https://github.com/jsdom/jsdom
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GNU Lesser General Public License Version version 2.1
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html
+
+hibernate-commons-annotations: 5.1.0.Final- https://mvnrepository.com/artifact/org.hibernate.common/hibernate-commons-annotations/5.1.0.Final
+hibernate-core: 5.4.21.Final - https://mvnrepository.com/artifact/org.hibernate/hibernate-core/5.4.21.Final
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+json
+
+The Program includes some or all of the following works licensed under json
+The url to the license is https://www.json.org/license.html
+
+json: 20200518 https://mvnrepository.com/artifact/org.json/json/20200518
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REDHAT UNIVERSAL BASE IMAGE v8.0 and v8.2
+
+RedHat UBI v8.0 and v8.2 has been taken under EULA > https://www.redhat.com/licenses/eulas
+
+The Program maybe provided with third party software programs subject to their own license terms.  
+The license terms either accompany the third party software programs or, in some instances, maybe may be viewed at >
+https://access.redhat.com/containers/
+
+
+END OF REDHAT UBI NON-IBM-LICENSE
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
