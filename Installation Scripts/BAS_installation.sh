@@ -48,13 +48,13 @@ cat <<EOF>bas-subscription.yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: behavior-analytics-services-operator-migrated
+  name: behavior-analytics-services-operator-certified
   namespace: "${projectName}"
 spec:
   channel: alpha
   installPlanApproval: Automatic
-  name: behavior-analytics-services-operator-migrated
-  source: bas-operator
+  name: behavior-analytics-services-operator-certified
+  source: redhat-operators
   sourceNamespace: openshift-marketplace
   startingCSV: behavior-analytics-services-operator.v1.0.0
 EOF
