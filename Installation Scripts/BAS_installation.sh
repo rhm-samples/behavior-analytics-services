@@ -54,7 +54,7 @@ spec:
   channel: alpha
   installPlanApproval: Automatic
   name: behavior-analytics-services-operator-certified
-  source: redhat-operators
+  source: certified-operators
   sourceNamespace: openshift-marketplace
   startingCSV: behavior-analytics-services-operator.v1.0.0
 EOF
