@@ -140,7 +140,7 @@ function checkDeploymentStatus() {
 	check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /behavior-analytics-services-operator/ { print }' | awk -F' ' '{print $NF}')
 	until [[ $retries -eq $retryCount || $check_for_deployment_status = "Ready" ]]; do
 		sleep 30
-		check_for_deployment_status=$(oc get FullDeployment fulldeployment --output="jsonpath={.status.phase}")
+		check_for_deployment_status=$(oc get AnalyticsProxy analyticsproxydeployment --output="jsonpath={.status.phase}")
 		retries=$((retries + 1))
 	done
 	echo "$check_for_deployment_status"

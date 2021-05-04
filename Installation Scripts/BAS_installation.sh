@@ -84,14 +84,14 @@ oc create secret generic database-credentials --from-literal=db_username=${dbuse
 oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" &>>"${logFile}"
 
 
-displayStepHeader 8 "Create the yaml for FullDeployment instance."
+displayStepHeader 8 "Create the yaml for AnalyticsProxy instance."
 
 
-cat <<EOF>full-deployment.yaml
+cat <<EOF>analytics-proxy.yaml
 apiVersion: bas.ibm.com/v1
-kind: FullDeployment
+kind: AnalyticsProxy
 metadata:
-  name: fulldeployment
+  name: analyticsproxydeployment
 spec:
   allowed_domains: "*"
   db_archive:
@@ -115,23 +115,21 @@ spec:
     storage_size: "${storageSizeKafka}"
     zookeeper_storage_class: "${storageClassZookeeper}"
     zookeeper_storage_size: "${storageSizeZookeeper}"
-  prometheus_scheduler_frequency: "${prometheusSchedulerFrequency}"
-  prometheus_metrics: []
   env_type: "${envType}"
 EOF
 
 displayStepHeader 9 "Install the Deployment"
 
-oc create -f full-deployment.yaml &>>"${logFile}"
+oc create -f analytics-proxy.yaml &>>"${logFile}"
 
 #Sleep for 5 mins
 sleep 120
 
 check_for_deployment_status=$(checkDeploymentStatus 2>&1)
 if [[ "${check_for_deployment_status}" == "Ready" ]]; then
-	echoGreen "FullDeployment setup ready"
+	echoGreen "Analytics Proxy Deployment setup ready"
 else
-    echoRed "FullDeployment setup failed."
+    echoRed "Analytics Proxy Deployment setup failed."
 	exit 1;
 fi
 
