@@ -72,7 +72,7 @@ function checkPropertyValuesprompt(){
   echoBlue "Are you sure, you want to Continue with Installation? [Y/n]: "
   read -r continueInstall </dev/tty
   if [[ ! $continueInstall || $continueInstall = *[^Yy] ]]; then
-    echoRed "Aborting installation of Behavior Analytics Services Operator"
+    echoRed "Aborting installation of User Data Services Operator"
     exit 0
   fi
 }
@@ -105,10 +105,10 @@ function createProject(){
   existingns=$(oc get projects | grep -w "${projectName}" | awk '{print $1}')
 
   if [ "${existingns}" == "${projectName}" ]; then
-    echoYellow "Project ${existingns} already exists, do you want to continue BAS operator installation in the existing project? [Y/n]: "
+    echoYellow "Project ${existingns} already exists, do you want to continue UDS operator installation in the existing project? [Y/n]: "
     read -r continueInstall </dev/tty
     if [[ ! $continueInstall || $continueInstall = *[^Yy] ]]; then
-      echoRed "Aborting installation of BAS Operator, please set new value for the Project in the cr.properties file." 
+      echoRed "Aborting installation of UDS Operator, please set new value for the Project in the cr.properties file." 
       exit 0;
     fi
   else
@@ -124,10 +124,10 @@ function checkClusterServiceVersionSucceeded() {
 
 	retryCount=20
 	retries=0
-	check_for_csv_success=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /behavior-analytics-services-operator/ { print }' | awk -F' ' '{print $NF}')
+	check_for_csv_success=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /user-data-services-operator/ { print }' | awk -F' ' '{print $NF}')
 	until [[ $retries -eq $retryCount || $check_for_csv_success = "Succeeded" ]]; do
 		sleep 5
-		check_for_csv_success=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /behavior-analytics-services-operator/ { print }' | awk -F' ' '{print $NF}')
+		check_for_csv_success=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /user-data-services-operator/ { print }' | awk -F' ' '{print $NF}')
 		retries=$((retries + 1))
 	done
 	echo "$check_for_csv_success"
@@ -137,7 +137,7 @@ function checkDeploymentStatus() {
 
 	retryCount=90
 	retries=0
-	check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /behavior-analytics-services-operator/ { print }' | awk -F' ' '{print $NF}')
+	check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /user-data-services-operator/ { print }' | awk -F' ' '{print $NF}')
 	until [[ $retries -eq $retryCount || $check_for_deployment_status = "Ready" ]]; do
 		sleep 30
 		check_for_deployment_status=$(oc get AnalyticsProxy analyticsproxydeployment --output="jsonpath={.status.phase}")
@@ -150,14 +150,14 @@ function getGenerateAPIKey() {
 
 	retryCount=10
 	retries=0
-	check_for_key=$(oc get secret bas-api-key --ignore-not-found)
+	check_for_key=$(oc get secret uds-api-key --ignore-not-found)
 	until [[ $retries -eq $retryCount || $check_for_key != "" ]]; do
 		sleep 5
-		check_for_key=$(oc get secret bas-api-key --ignore-not-found)
+		check_for_key=$(oc get secret uds-api-key --ignore-not-found)
 		retries=$((retries + 1))
 	done
 	if [[ $check_for_key != "" ]]; then
-	   check_for_key=$(oc get secret bas-api-key --output="jsonpath={.data.apikey}" | base64 -d)
+	   check_for_key=$(oc get secret uds-api-key --output="jsonpath={.data.apikey}" | base64 -d)
 	fi
 	echo "$check_for_key"
 }
