@@ -83,7 +83,7 @@ oc create secret generic database-credentials --from-literal=db_username=${dbuse
 
 oc create secret generic consent-database-credentials --from-literal=consent_db_username=${consent_db_username} --from-literal=consent_db_password=${consent_db_password} -n "${projectName}" &>>"${logFile}"
 
-oc create secret generic consent-ui-credentials --from-literal=consent_username=${consent_ui_username} --from-literal=consent_password=${consent_ui_password} -n "${projectName}" &>>"${logFile}"
+oc create secret generic consent-ui-credentials --from-literal=consent_username=${consent_username} --from-literal=consent_password=${consent_password} -n "${projectName}" &>>"${logFile}"
 
 
 
