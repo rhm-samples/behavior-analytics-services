@@ -2,7 +2,7 @@
 
 ## This Script installs UDS operator using default values. 
 source uds-script-functions.bash
-source cr.properties
+source uds-cr.properties
 
 requiredVersion="^.*4\.([0-9]{3,}|[3-9]?)?(\.[0-9]+.*)*$"
 requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
