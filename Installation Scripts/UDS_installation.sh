@@ -119,8 +119,6 @@ spec:
     storage_size: "${storageSizeKafka}"
     zookeeper_storage_class: "${storageClassZookeeper}"
     zookeeper_storage_size: "${storageSizeZookeeper}"
-  prometheus_scheduler_frequency: "${prometheusSchedulerFrequency}"
-  prometheus_metrics: []
   env_type: "${envType}"
 EOF
 
