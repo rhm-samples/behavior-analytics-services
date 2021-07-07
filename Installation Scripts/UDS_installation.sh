@@ -56,7 +56,7 @@ spec:
   name: user-data-services-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: user-data-services-operator.v1.0.0
+  startingCSV: user-data-services-operator.v2.0.0
 EOF
 
 
@@ -66,7 +66,7 @@ oc create -f uds-subscription.yaml &>>"${logFile}"
 
 
 displayStepHeader 6 "Verify the Operator installation"
-#There should be user-data-services-operator.v1.0.0.
+#There should be user-data-services-operator.v2.0.0.
 
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
 
