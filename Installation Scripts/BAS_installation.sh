@@ -6,7 +6,9 @@ source cr.properties
 
 requiredVersion="^.*4\.([0-9]{3,}|[3-9]?)?(\.[0-9]+.*)*$"
 requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
-
+ocpVersion="^\"4\.([0-9]{6,}|[6-9]?)?(\.[0-9]+.*)*$"
+ocpVersion45="^\"4\.5\.[0-9]+.*$"
+basVersion=1.0.0
 
 logFile="bas-installation.log"
 touch "${logFile}"
@@ -15,6 +17,7 @@ validatePropertiesfile
 
 checkPropertyValuesprompt
 checkOCClientVersion
+checkOpenshiftVersion
 
 status=$(oc whoami 2>&1)
 if [[ $? -gt 0 ]]; then
@@ -56,7 +59,7 @@ spec:
   name: behavior-analytics-services-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: behavior-analytics-services-operator.v1.0.0
+  startingCSV: behavior-analytics-services-operator.${basVersion}
 EOF
 
 
