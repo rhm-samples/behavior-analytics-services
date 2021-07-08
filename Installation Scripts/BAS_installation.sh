@@ -8,7 +8,7 @@ requiredVersion="^.*4\.([0-9]{3,}|[3-9]?)?(\.[0-9]+.*)*$"
 requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
 ocpVersion="^\"4\.([0-9]{6,}|[6-9]?)?(\.[0-9]+.*)*$"
 ocpVersion45="^\"4\.5\.[0-9]+.*$"
-basVersion=1.0.0
+basVersion=v1.0.0
 
 logFile="bas-installation.log"
 touch "${logFile}"
