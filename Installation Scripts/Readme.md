@@ -72,16 +72,16 @@ Below tools should be installed on your terminal before you start script executi
     apiVersion: operators.coreos.com/v1alpha1
     kind: CatalogSource
     metadata:
-       name: bas-11-source
-       namespace: openshift-marketplace
+      name: bas-11-source
+      namespace: openshift-marketplace
     spec:
-       sourceType: grpc
-       image: quay.io/growthstack/bas-operator:bas-index-1.1.0-private
-       displayName: BAS-1.1.0
-       publisher: Red Hat Partner
-       updateStrategy:
-           registryPoll:
-           interval: 5m
+      sourceType: grpc
+      image: quay.io/growthstack/bas-operator:bas-index-1.1.0-private
+      displayName: BAS-1.1.0
+      publisher: Red Hat Partner
+      updateStrategy:
+        registryPoll:
+          interval: 5m
     EOF
     ```
 
