@@ -56,7 +56,7 @@ metadata:
 spec:
   channel: alpha
   installPlanApproval: Automatic
-  name: behavior-analytics-services-operator-certified
+  name: behavior-analytics-services-operator-certified-private
   source: bas-11-source
   sourceNamespace: openshift-marketplace
   startingCSV: behavior-analytics-services-operator.${basVersion}
