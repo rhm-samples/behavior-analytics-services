@@ -104,7 +104,7 @@ spec:
       storage_class: "${storageClassArchive}"
       storage_size: "${storageSizeArchive}"
   airgapped:
-    enabled: "${airgappedEnabled}"
+    enabled: ${airgappedEnabled}
     backup_deletion_frequency: '@daily'
     backup_retention_period: 7
   event_scheduler_frequency: "${eventSchedulerFrequency}"
