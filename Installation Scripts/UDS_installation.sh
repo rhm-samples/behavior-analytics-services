@@ -96,7 +96,9 @@ kind: AnalyticsProxy
 metadata:
   name: analyticsproxydeployment
 spec:
- allowed_domains: "*"
+  license:
+    accept: true 
+  allowed_domains: "*"
   db_archive:
     frequency: '@monthly'
     retention_age: 6
