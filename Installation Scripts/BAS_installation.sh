@@ -30,6 +30,26 @@ createProject
 
 displayStepHeader 2 "Create an OperatorGroup object YAML file"
 
+displayStepHeader 3 "Create a CatalogSource"
+
+cat <<EOF>bas-CatalogSource.yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: bas-111
+  namespace: openshift-marketplace
+spec:
+  displayName: BAS-Test-111
+  image: 'quay.io/growthstack/bas-operator:1.1.1-index'
+  publisher: Red Hat Partner
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 5m
+EOF
+
+oc create -f bas-CatalogSource.yaml &>>"${logFile}"
+
 cat <<EOF>bas-og.yaml
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
@@ -41,11 +61,11 @@ spec:
   - "${projectName}"
 EOF
 
-displayStepHeader 3 "Create the OperatorGroup object"
+displayStepHeader 4 "Create the OperatorGroup object"
 
 oc create -f bas-og.yaml &>>"${logFile}"
 
-displayStepHeader 4 "Create a Subscription object YAML file to subscribe a Namespace"
+displayStepHeader 5 "Create a Subscription object YAML file to subscribe a Namespace"
 
 cat <<EOF>bas-subscription.yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -57,18 +77,18 @@ spec:
   channel: alpha
   installPlanApproval: Automatic
   name: behavior-analytics-services-operator-certified
-  source: bas-111-test
+  source: bas-111
   sourceNamespace: openshift-marketplace
   startingCSV: behavior-analytics-services-operator.v1.1.1
 EOF
 
 
-displayStepHeader 5 "Create Subscription object"
+displayStepHeader 6 "Create Subscription object"
 
 oc create -f bas-subscription.yaml &>>"${logFile}"
 
 
-displayStepHeader 6 "Verify the Operator installation"
+displayStepHeader 7 "Verify the Operator installation"
 #There should be behavior-analytics-services-operator.v1.0.0.
 
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
@@ -80,14 +100,14 @@ else
 	exit 1;
 fi
 
-displayStepHeader 7 "Create a secret named database-credentials for PostgreSQL DB and grafana-credentials for Grafana"
+displayStepHeader 8 "Create a secret named database-credentials for PostgreSQL DB and grafana-credentials for Grafana"
 
 oc create secret generic database-credentials --from-literal=db_username=${dbuser} --from-literal=db_password=${dbpassword} -n "${projectName}" &>>"${logFile}"
 
 oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" &>>"${logFile}"
 
 
-displayStepHeader 8 "Create the yaml for AnalyticsProxy instance."
+displayStepHeader 9 "Create the yaml for AnalyticsProxy instance."
 
 
 cat <<EOF>analytics-proxy.yaml
@@ -125,7 +145,7 @@ spec:
     no_proxy: "${no_proxy}"
 EOF
 
-displayStepHeader 9 "Install the Deployment"
+displayStepHeader 10 "Install the Deployment"
 
 oc create -f analytics-proxy.yaml &>>"${logFile}"
 
@@ -140,7 +160,7 @@ else
 	exit 1;
 fi
 
-displayStepHeader 10 "Generate an API Key to use it for authentication"
+displayStepHeader 11 "Generate an API Key to use it for authentication"
 
 cat <<EOF>api-key.yaml
 apiVersion: bas.ibm.com/v1
@@ -163,7 +183,7 @@ bas_endpoint_url=https://$(oc get routes bas-endpoint -n "${projectName}" |awk '
 grafana_dashboard_url=https://$(oc get routes grafana-route -n "${projectName}" |awk 'NR==2 {print $2}')
 
 
-displayStepHeader 12 "Get the API key value and the URLs"
+displayStepHeader 13 "Get the API key value and the URLs"
 echo "===========API KEY=============="
 echoYellow $check_for_key
 echo "===========BAS Endpoint URL=============="
