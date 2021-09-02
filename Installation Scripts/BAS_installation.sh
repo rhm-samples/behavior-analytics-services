@@ -57,9 +57,9 @@ spec:
   channel: alpha
   installPlanApproval: Automatic
   name: behavior-analytics-services-operator-certified
-  source: certified-operators
+  source: bas-111-test
   sourceNamespace: openshift-marketplace
-  startingCSV: behavior-analytics-services-operator.${basVersion}
+  startingCSV: behavior-analytics-services-operator.v1.1.1
 EOF
 
 
@@ -119,6 +119,10 @@ spec:
     zookeeper_storage_class: "${storageClassZookeeper}"
     zookeeper_storage_size: "${storageSizeZookeeper}"
   env_type: "${envType}"
+  proxy_settings:
+    http_proxy: "${http_proxy}"
+    https_proxy: "${https_proxy}"
+    no_proxy: "${no_proxy}"
 EOF
 
 displayStepHeader 9 "Install the Deployment"
