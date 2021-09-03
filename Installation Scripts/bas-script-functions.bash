@@ -40,7 +40,7 @@ function validatePropertiesfile(){
     do
       key_name=$(echo $key | grep -v '^#')
 
-      if [[ -z "$key_name" || "$key_name" == " " || $key_name == " " ]];then
+      if [[ -z "$key_name" || "$key_name" == " " || $key_name == " " || $key_name == "http_proxy" || $key_name == "https_proxy" || $key_name == "no_proxy" ]];then
         continue
       fi
       if [[ -z "${!key_name}" || "${!key_name}" == "" || ${!key_name} == "" ]]; then
