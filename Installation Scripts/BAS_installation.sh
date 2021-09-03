@@ -28,9 +28,8 @@ fi
 displayStepHeader 1 "Create a new project"
 createProject
 
-displayStepHeader 2 "Create an OperatorGroup object YAML file"
 
-displayStepHeader 3 "Create a CatalogSource"
+displayStepHeader 2 "Create a CatalogSource"
 
 cat <<EOF>bas-CatalogSource.yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -40,7 +39,7 @@ metadata:
   namespace: openshift-marketplace
 spec:
   displayName: BAS-Test-111
-  image: 'quay.io/growthstack/bas-operator:1.1.1-index'
+  image: 'quay.io/growthstack/bas-operator:1.1.1-index-latest'
   publisher: Red Hat Partner
   sourceType: grpc
   updateStrategy:
@@ -50,6 +49,9 @@ EOF
 
 oc create -f bas-CatalogSource.yaml &>>"${logFile}"
 
+sleep 120s
+
+displayStepHeader 3 "Create an OperatorGroup object YAML file"
 cat <<EOF>bas-og.yaml
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
@@ -64,7 +66,6 @@ EOF
 displayStepHeader 4 "Create the OperatorGroup object"
 
 oc create -f bas-og.yaml &>>"${logFile}"
-
 displayStepHeader 5 "Create a Subscription object YAML file to subscribe a Namespace"
 
 cat <<EOF>bas-subscription.yaml
@@ -172,7 +173,7 @@ spec:
 EOF
 
 
-displayStepHeader 11 "Create the API Key"
+displayStepHeader 12 "Create the API Key"
 
 oc create -f api-key.yaml
   
