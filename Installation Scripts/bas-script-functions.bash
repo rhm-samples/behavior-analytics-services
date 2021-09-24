@@ -105,7 +105,7 @@ function checkOpenshiftVersion() {
   currentOpenshiftVersion="$(oc version -o json | jq .openshiftVersion)"
   echo $currentOpenshiftVersion
   if [[ $currentOpenshiftVersion =~ $ocpVersion ]]; then
-    echo "install BAS 1.1.0"
+    echo "install BAS 1.1.1"
     basVersion=v1.1.0
   elif [[ $currentOpenshiftVersion =~ $ocpVersion45 ]]; then
     echo "install BAS 1.0.0"
