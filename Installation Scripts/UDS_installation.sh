@@ -22,10 +22,31 @@ if [[ $? -gt 0 ]]; then
         exit 1;
 fi
 
-displayStepHeader 1 "Create a new project"
+displayStepHeader 1 "Create a CatalogSource object YAML file"
+cat <<EOF>ibm-operator-catalog.yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: ibm-operator-catalog
+  image: icr.io/cpopen/ibm-operator-catalog
+  publisher: IBM Content
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 45m
+EOF
+
+displayStepHeader 2 "Create the CatalogSource object"
+
+oc create -f ibm-operator-catalog.yaml &>>"${logFile}"
+
+displayStepHeader 3 "Create a new project"
 createProject
 
-displayStepHeader 2 "Create an OperatorGroup object YAML file"
+displayStepHeader 4 "Create an OperatorGroup object YAML file"
 
 cat <<EOF>uds-og.yaml
 apiVersion: operators.coreos.com/v1
@@ -38,38 +59,82 @@ spec:
   - "${projectName}"
 EOF
 
-displayStepHeader 3 "Create the OperatorGroup object"
+displayStepHeader 5 "Create the OperatorGroup object"
 
 oc create -f uds-og.yaml &>>"${logFile}"
 
-displayStepHeader 4 "Create a Subscription object YAML file to subscribe a Namespace"
+displayStepHeader 6 "Create a Subscription object YAML file to subscribe a Namespace"
 
-cat <<EOF>uds-subscription.yaml
+cat <<EOF>cs-subscription.yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: user-data-services-operator-certified
+  name: ibm-common-service-operator
   namespace: "${projectName}"
 spec:
-  channel: alpha
+  channel: v3
   installPlanApproval: Automatic
-  name: user-data-services-operator-certified
-  source: certified-operators
+  name: ibm-common-service-operator
+  source: ibm-operator-catalog
   sourceNamespace: openshift-marketplace
-  startingCSV: user-data-services-operator.v2.0.0
+  startingCSV: ibm-common-service-operator.v3.14.0
 EOF
 
 
-displayStepHeader 5 "Create Subscription object"
+displayStepHeader 7 "Create Subscription object"
 
-oc create -f uds-subscription.yaml &>>"${logFile}"
+oc create -f cs-subscription.yaml &>>"${logFile}"
 
 
-displayStepHeader 6 "Verify the Operator installation"
-#There should be user-data-services-operator.v2.0.0.
+displayStepHeader 8 "Verify the Operator installation"
+echoBlue "Waiting to deploy UDS"
+sleep 300
 
+#check_for_deployment_status=$(checkDeploymentStatusOperandReg 2>&1)
+retryCount=50
+  retries=0
+  check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /operand-deployment-lifecycle-manager/ { print }' | awk -F' ' '{print $NF}')
+  until [[ $retries -eq $retryCount ]]; do
+    sleep 5
+    if [ "$check_for_deployment_status" == "Ready for Deployment" ]; then
+      break
+    fi
+    check_for_deployment_status=$(oc get OperandRegistries common-service --output="jsonpath={.status.phase}")
+    retries=$((retries + 1))
+  done
+
+if [ "$check_for_deployment_status" == "Ready for Deployment" ]; then
+	echoGreen "Ready for UDS Deployment"
+else
+    echoRed "Not Ready for UDS Deployment"
+	exit 1;
+fi
+displayStepHeader 9 "Create UDS Operand request YAML"
+
+cat <<EOF>uds-or.yaml
+apiVersion: operator.ibm.com/v1alpha1
+kind: OperandRequest
+metadata:
+  name: ibm-user-data-services
+  labels:
+    app.kubernetes.io/instance: operand-deployment-lifecycle-manager
+    app.kubernetes.io/managed-by: operand-deployment-lifecycle-manager
+    app.kubernetes.io/name: operand-deployment-lifecycle-manager
+  namespace: ibm-common-services
+spec:
+  requests:
+    - operands:
+        - name: ibm-user-data-services-operator
+      registry: common-service
+EOF
+
+displayStepHeader 10 "Create UDS Operand request"
+
+oc create -f uds-or.yaml &>>"${logFile}"
+
+displayStepHeader 11 "Verify the Operator installation"
+#There should be user-data-services-operator.v2.0.2.
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
-
 if [[ "${check_for_csv_success}" == "Succeeded" ]]; then
 	echoGreen "User Data Services Operator installed"
 else
@@ -77,17 +142,7 @@ else
 	exit 1;
 fi
 
-displayStepHeader 7 "Create a secret named database-credentials for PostgreSQL DB and grafana-credentials for Grafana"
-
-oc create secret generic database-credentials --from-literal=db_username=${dbuser} --from-literal=db_password=${dbpassword} -n "${projectName}" &>>"${logFile}"
-
-oc create secret generic consent-database-credentials --from-literal=consent_db_username=${consent_db_username} --from-literal=consent_db_password=${consent_db_password} -n "${projectName}" &>>"${logFile}"
-
-oc create secret generic consent-ui-credentials --from-literal=consent_username=${consent_username} --from-literal=consent_password=${consent_password} -n "${projectName}" &>>"${logFile}"
-
-
-
-displayStepHeader 8 "Create the yaml for AnalyticsProxy instance."
+displayStepHeader 12 "Create the yaml for AnalyticsProxy instance."
 
 
 cat <<EOF>analytics-proxy.yaml
@@ -100,31 +155,31 @@ spec:
     accept: true 
   allowed_domains: "*"
   db_archive:
-    frequency: '@monthly'
-    retention_age: 6
     persistent_storage:
-      storage_class: "${storageClassArchive}"
       storage_size: "${storageSizeArchive}"
   airgappeddeployment:
-    enabled: "${airgappedEnabled}"
-    backup_deletion_frequency: '@daily'
-    backup_retention_period: 7
+    enabled: ${airgappedEnabled}
   event_scheduler_frequency: "${eventSchedulerFrequency}"
-  consent_scheduler_frequency: "${consent_scheduler_frequency}"
   ibmproxyurl: "${ibmproxyurl}"
-  image_pull_secret: "${imagePullSecret}"
+  storage_class: ${storageClass}
   postgres:
-    storage_class: ${storageClassDB}
     storage_size: ${storageSizeDB}
+    backup_type: ${postgresBackupType}
+    backup_frequency: '${postgresBackupFre}'
   kafka:
-    storage_class: "${storageClassKafka}"
     storage_size: "${storageSizeKafka}"
-    zookeeper_storage_class: "${storageClassZookeeper}"
     zookeeper_storage_size: "${storageSizeZookeeper}"
   env_type: "${envType}"
+  tls:
+    uds_host: "${uds_host}"
+    airgap_host: "${airgap_host}"  
+  proxy_settings:
+    http_proxy: "${http_proxy}"
+    https_proxy: "${https_proxy}"
+    no_proxy: "${no_proxy}" 
 EOF
 
-displayStepHeader 9 "Install the Deployment"
+displayStepHeader 13 "Install the Deployment"
 
 oc create -f analytics-proxy.yaml &>>"${logFile}"
 
@@ -139,7 +194,8 @@ else
 	exit 1;
 fi
 
-displayStepHeader 10 "Generate an API Key to use it for authentication"
+
+displayStepHeader 14 "Generate an API Key to use it for authentication"
 
 cat <<EOF>api-key.yaml
 apiVersion: uds.ibm.com/v1
@@ -151,7 +207,7 @@ spec:
 EOF
 
 
-displayStepHeader 11 "Create the API Key"
+displayStepHeader 15 "Create the API Key"
 
 oc create -f api-key.yaml
   
@@ -159,13 +215,11 @@ check_for_key=$(getGenerateAPIKey)
 
 #Get the URLS
 uds_endpoint_url=https://$(oc get routes uds-endpoint -n "${projectName}" |awk 'NR==2 {print $2}')
-consent_endpoint_url=https://$(oc get routes consent-endpoint -n "${projectName}" |awk 'NR==2 {print $2}')
 
-displayStepHeader 12 "Get the API key value and the URLs"
+displayStepHeader 16 "Get the API key value and the URLs"
 echo "===========API KEY=============="
 echoYellow $check_for_key
 echo "===========UDS Endpoint URL=============="
 echoYellow $uds_endpoint_url
-echo "===========Consent URL=============="
-echoYellow $consent_endpoint_url
+
 
