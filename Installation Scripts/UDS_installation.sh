@@ -96,14 +96,14 @@ retryCount=50
   check_for_deployment_status=$(oc get csv -n "$projectName" --ignore-not-found | awk '$1 ~ /operand-deployment-lifecycle-manager/ { print }' | awk -F' ' '{print $NF}')
   until [[ $retries -eq $retryCount ]]; do
     sleep 5
-    if [ "$check_for_deployment_status" == "Ready for Deployment" ]; then
+    if [[ "$check_for_deployment_status" == "Ready for Deployment" || "$check_for_deployment_status" == "Running" ]]; then
       break
     fi
     check_for_deployment_status=$(oc get OperandRegistries common-service --output="jsonpath={.status.phase}")
     retries=$((retries + 1))
   done
 
-if [ "$check_for_deployment_status" == "Ready for Deployment" ]; then
+if [[ "$check_for_deployment_status" == "Ready for Deployment" || "$check_for_deployment_status" == "Running" ]]; then
 	echoGreen "Ready for UDS Deployment"
 else
     echoRed "Not Ready for UDS Deployment"
