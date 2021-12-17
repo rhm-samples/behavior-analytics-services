@@ -59,7 +59,7 @@ spec:
   name: behavior-analytics-services-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: behavior-analytics-services-operator.${basVersion}
+  startingCSV: behavior-analytics-services-operator${basVersion}
 EOF
 
 
@@ -69,7 +69,7 @@ oc create -f bas-subscription.yaml &>>"${logFile}"
 
 
 displayStepHeader 6 "Verify the Operator installation"
-#There should be behavior-analytics-services-operator.v1.0.0.
+#There should be behavior-analytics-services-operator.v1.1.2.
 
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
 
