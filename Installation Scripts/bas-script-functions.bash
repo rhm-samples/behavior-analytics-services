@@ -106,10 +106,10 @@ function checkOpenshiftVersion() {
   echo OCP version is "$currentOpenshiftVersion"
   if [[ $currentOpenshiftVersion =~ $ocpVersion ]]; then
     echo "install BAS 1.1.2"
-    basVersion=v1.1.2
+    basVersion=-certified.v1.1.2
   elif [[ $currentOpenshiftVersion =~ $ocpVersion45 ]]; then
     echo "install BAS 1.0.0"
-    basVersion=v1.0.0
+    basVersion=.v1.0.0
   else
     echo "Unsupportedd Openshift version $currentOpenshiftVersion.Supported OpenShift versions are 4.5 to 4.7."
     exit 1

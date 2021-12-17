@@ -59,7 +59,7 @@ spec:
   name: behavior-analytics-services-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: behavior-analytics-services-operator-certified.${basVersion}
+  startingCSV: behavior-analytics-services-operator${basVersion}
 EOF
 
 
