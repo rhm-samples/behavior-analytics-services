@@ -1,0 +1,8 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: bas-operator-group
+  namespace: "bas-112-script-test" 
+spec: 
+  targetNamespaces:
+  - "bas-112-script-test"
