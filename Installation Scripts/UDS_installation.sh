@@ -99,7 +99,7 @@ retryCount=50
     if [[ "$check_for_deployment_status" == "Ready for Deployment" || "$check_for_deployment_status" == "Running" ]]; then
       break
     fi
-    check_for_deployment_status=$(oc get OperandRegistries common-service --output="jsonpath={.status.phase}")
+    check_for_deployment_status=$(oc get OperandRegistries common-service --output="jsonpath={.status.phase}" -n "${projectName}" )
     retries=$((retries + 1))
   done
 
@@ -133,7 +133,7 @@ displayStepHeader 10 "Create UDS Operand request"
 oc create -f uds-or.yaml &>>"${logFile}"
 
 displayStepHeader 11 "Verify the Operator installation"
-#There should be user-data-services-operator.v2.0.2.
+#There should be user-data-services-operator.
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
 if [[ "${check_for_csv_success}" == "Succeeded" ]]; then
 	echoGreen "User Data Services Operator installed"
