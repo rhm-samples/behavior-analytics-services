@@ -1,9 +1,0 @@
-Error from server (AlreadyExists): error when creating "ibm-operator-catalog.yaml": catalogsources.operators.coreos.com "ibm-operator-catalog" already exists
-Error from server (AlreadyExists): error when creating "ibm-operator-catalog.yaml": catalogsources.operators.coreos.com "ibm-operator-catalog" already exists
-Error from server (AlreadyExists): error when creating "uds-og.yaml": operatorgroups.operators.coreos.com "uds-operator-group" already exists
-Error from server (AlreadyExists): error when creating "cs-subscription.yaml": subscriptions.operators.coreos.com "ibm-common-service-operator" already exists
-Error from server (AlreadyExists): error when creating "ibm-operator-catalog.yaml": catalogsources.operators.coreos.com "ibm-operator-catalog" already exists
-Error from server (AlreadyExists): error when creating "uds-og.yaml": operatorgroups.operators.coreos.com "uds-operator-group" already exists
-Error from server (AlreadyExists): error when creating "cs-subscription.yaml": subscriptions.operators.coreos.com "ibm-common-service-operator" already exists
-operandrequest.operator.ibm.com/ibm-user-data-services created
-analyticsproxy.uds.ibm.com/analyticsproxydeployment created
