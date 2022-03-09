@@ -77,7 +77,7 @@ spec:
   name: ibm-common-service-operator
   source: ibm-operator-catalog
   sourceNamespace: openshift-marketplace
-  startingCSV: ibm-common-service-operator.v3.14.0
+  startingCSV: ibm-common-service-operator.v3.15.1
 EOF
 
 

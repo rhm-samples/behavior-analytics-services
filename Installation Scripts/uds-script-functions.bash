@@ -19,6 +19,10 @@ function echoBlue() {
   echo -e "${BLUE}$1${NC}"
 }
 
+function echoLine() {
+  echoYellow "----------------------------------------------------------------------------------------"
+}
+
 function echoYellow() {
   echo -e "${YELLOW}$1${NC}"
 }
@@ -38,7 +42,7 @@ function displayStepHeaderTest() {
 }
 
 function stepLogTest() {
-  echo -e "STEP $1/2: $2"
+  echo -e "STEP $1/5: $2"
 }
 
 function validatePropertiesfile(){
