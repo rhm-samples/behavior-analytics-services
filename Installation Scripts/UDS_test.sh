@@ -55,7 +55,9 @@ echoBlue "Testing Event APIs"
 echoLine
 
 displayStepHeaderTest 1 "Testing Consumption API"
-response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/consumption" -H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" -d "{\"anonymousId\":\"GSE\",\"properties\":{\"frequency\":\"hourly\",\"productId\":\"Demo\",\"quantity\":100,\"unit\":\"AppPoints\",\"salesOrderNumber\":\"5\",\"chargePlanType\":0,\"planName\":\"test\",\"unitDescription\":\"gb\",\"productTitle\":\"test usage plan\",\"resultValue\":\"sample\"},\"timestamp\":\"2020-10-30T00:00:00.000Z\",\"type\":\"track\",\"userId\":\"00000\",\"writeKey\":\"<api-key>\"}")
+response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/consumption" \
+-H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" \
+-d "{\"anonymousId\":\"GSE\",\"properties\":{\"frequency\":\"hourly\",\"productId\":\"Demo\",\"quantity\":100,\"unit\":\"AppPoints\",\"salesOrderNumber\":\"5\",\"chargePlanType\":0,\"planName\":\"test\",\"unitDescription\":\"gb\",\"productTitle\":\"test usage plan\",\"resultValue\":\"sample\"},\"timestamp\":\"2020-10-30T00:00:00.000Z\",\"type\":\"track\",\"userId\":\"00000\",\"writeKey\":\"<api-key>\"}")
 
 if [[ $response != '' ]] ; then
     echoGreen "Consumption API Response : $response"
@@ -67,7 +69,9 @@ fi
 echoLine
 
 displayStepHeaderTest 2 "Testing analytics API"
-response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/analytics" -H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" -d "{\"anonymousId\":\"GSE\",\"context\":{},\"event\":\"string\",\"groupId\":\"string\",\"integrations\":{},\"messageId\":\"string\",\"name\":\"string\",\"previousId\":\"string\",\"properties\":{},\"timestamp\":\"2020-01-01T00:00:00.000Z\",\"traits\":{},\"type\":\"track\",\"userId\":\"string\",\"writeKey\":\"<api-key>\"}")
+response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/analytics" \
+-H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" \
+-d "{\"anonymousId\":\"GSE\",\"context\":{},\"event\":\"string\",\"groupId\":\"string\",\"integrations\":{},\"messageId\":\"string\",\"name\":\"string\",\"previousId\":\"string\",\"properties\":{},\"timestamp\":\"2020-01-01T00:00:00.000Z\",\"traits\":{},\"type\":\"track\",\"userId\":\"string\",\"writeKey\":\"<api-key>\"}")
 
 if [[ $response != '' ]] ; then
     echoGreen "Analytics API Response : $response"
@@ -120,12 +124,12 @@ response=$(curl -fsS --location --request POST "$submodule_endpoint_url/cm/2/con
 --header "X-dpcm-apikey: $check_for_key" \
 --header 'Content-Type: application/json' \
 --header 'Cookie: 7f9746c7c25e68415b39dc77b965c509=3f22952074ead4ec51effb683010ad1e' \
+--header "X-dpcm-addsystemidentifier: true" \
 -d '{
 	"state":"1",
 	"purpose_id":"1",
-	"consenter_id":"testscriptid",
+	"consenter_id":"testscriptid_11",
 	"end_date": "2055-01-01T00:00:00.000Z",
-    "data_id":"270",
 	"access_type_id": 1,
 	"attributes":[
         {
@@ -154,7 +158,7 @@ response=$(curl -fsS --location --request POST "$submodule_endpoint_url/cm/2/sea
 --header 'Content-Type: application/json' \
 --header 'Cookie: 7f9746c7c25e68415b39dc77b965c509=3f22952074ead4ec51effb683010ad1e' \
 -d '{
-	"consenter_id": "testscriptid"
+	"consenter_id": "testscriptid_11"
 }')
 
 if [[ $response != '' ]] ; then
