@@ -1,6 +1,8 @@
 
 #!/bin/bash
 source uds-script-functions.bash
+logFile="uds-test.log"
+touch "${logFile}"
 
 while getopts n:u:t:h--help: option; do
   case "${option}" in
