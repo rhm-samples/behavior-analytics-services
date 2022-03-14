@@ -1,16 +1,16 @@
 
 #!/bin/bash
 source uds-script-functions.bash
-logFile="uds-test.log"
-touch "${logFile}"
 
-while getopts n:u:t:h--help: option; do
+while getopts n:k:h--help: option; do
   case "${option}" in
     n) NS=${OPTARG};;
+    k) SK=${OPTARG};;
     h|--help)
       echo "
 Options:
   -n: Namespace where UDS is installed
+  -k: Segment Key
 
 Examples:
   # To get help:
@@ -18,6 +18,9 @@ Examples:
 
   # To test UDS APIs in 'uds-test' namespace:
   ./UDs_test.sh -n uds-test
+  
+  # To test UDS APIs in 'uds-test' namespace: and send events to segment (optional)
+  ./UDs_test.sh -n uds-test -k segment_key
   "
       exit 0
       ;;
@@ -45,21 +48,29 @@ flag_uds=true
 flag_sm=true
 check_for_key=$(getGenerateAPIKey)
 uds_endpoint_url=$(oc get routes uds-endpoint -n "${projectName}" |awk 'NR==2 {print $2}')
+
+if [[ -z "$check_for_key" ]];then
+      echoRed "API Key not found, please generate API key..."
+      exit 1;
+fi
+
 if [[ -z "$uds_endpoint_url" || "$uds_endpoint_url" == " " ]];then
       echoRed "Something went wrong...."
       exit 1;
 fi
 
-uds_endpoint_url=https://"$uds_endpoint_url"
 
 echoLine
+echoGreen "UDS Endpoint Exists"
+uds_endpoint_url=https://"$uds_endpoint_url"
+
 echoBlue "Testing Event APIs"
 echoLine
 
 displayStepHeaderTest 1 "Testing Consumption API"
 response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/consumption" \
 -H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" \
--d "{\"anonymousId\":\"GSE\",\"properties\":{\"frequency\":\"hourly\",\"productId\":\"Demo\",\"quantity\":100,\"unit\":\"AppPoints\",\"salesOrderNumber\":\"5\",\"chargePlanType\":0,\"planName\":\"test\",\"unitDescription\":\"gb\",\"productTitle\":\"test usage plan\",\"resultValue\":\"sample\"},\"timestamp\":\"2020-10-30T00:00:00.000Z\",\"type\":\"track\",\"userId\":\"00000\",\"writeKey\":\"<api-key>\"}")
+-d "{\"anonymousId\":\"GSE\",\"properties\":{\"frequency\":\"hourly\",\"productId\":\"Demo\",\"quantity\":100,\"unit\":\"AppPoints\",\"salesOrderNumber\":\"5\",\"chargePlanType\":0,\"planName\":\"test\",\"unitDescription\":\"gb\",\"productTitle\":\"test usage plan\",\"resultValue\":\"sample\"},\"timestamp\":\"2020-10-30T00:00:00.000Z\",\"type\":\"track\",\"userId\":\"00000\",\"writeKey\":\"${SK}\"}")
 
 if [[ $response != '' ]] ; then
     echoGreen "Consumption API Response : $response"
@@ -73,7 +84,7 @@ echoLine
 displayStepHeaderTest 2 "Testing analytics API"
 response=$(curl -fsS  -X POST "$uds_endpoint_url:443/v1/analytics" \
 -H "accept: */*" -H "X-API-KEY: $check_for_key" -H "Content-Type: application/json" \
--d "{\"anonymousId\":\"GSE\",\"context\":{},\"event\":\"string\",\"groupId\":\"string\",\"integrations\":{},\"messageId\":\"string\",\"name\":\"string\",\"previousId\":\"string\",\"properties\":{},\"timestamp\":\"2020-01-01T00:00:00.000Z\",\"traits\":{},\"type\":\"track\",\"userId\":\"string\",\"writeKey\":\"<api-key>\"}")
+-d "{\"anonymousId\":\"GSE\",\"context\":{},\"event\":\"string\",\"groupId\":\"string\",\"integrations\":{},\"messageId\":\"string\",\"name\":\"string\",\"previousId\":\"string\",\"properties\":{},\"timestamp\":\"2020-01-01T00:00:00.000Z\",\"traits\":{},\"type\":\"track\",\"userId\":\"string\",\"writeKey\":\"${SK}\"}")
 
 if [[ $response != '' ]] ; then
     echoGreen "Analytics API Response : $response"
@@ -114,6 +125,8 @@ if [[ -z "$submodule_endpoint_url" || "$submodule_endpoint_url" == " " ]];then
       exit 1;
 fi
 
+echoLine
+echoGreen "Submodule Endpoit Exists"
 submodule_endpoint_url=https://"$submodule_endpoint_url"
 
 echoBlue "Testing Submodule APIs"
