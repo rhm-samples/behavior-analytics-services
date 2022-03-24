@@ -1,6 +1,6 @@
 
 #!/bin/bash
-source uds-script-functions.bash
+. ./uds-script-functions.bash
 
 while getopts n:k:h--help: option; do
   case "${option}" in
@@ -19,7 +19,7 @@ Examples:
   # To test UDS APIs in 'uds-test' namespace:
   ./UDs_test.sh -n uds-test
   
-  # To test UDS APIs in 'uds-test' namespace: and send events to segment (optional)
+  # To test UDS APIs in 'uds-test' namespace: and send events to segment
   ./UDs_test.sh -n uds-test -k segment_key
   "
       exit 0
@@ -33,6 +33,12 @@ status=$(oc whoami 2>&1)
 if [[ $? -gt 0 ]]; then
     echoRed "Login to OpenShift to continue UDS Operator installation."
         exit 1;
+fi
+
+if [ -z "$SK" ]; then
+      echoRed "It looks like you haven't set the Segment Key to test UDS APIs"
+  echoBlue "Check Options by using -h or --help"
+  exit 1;
 fi
 
 if [ ! -z "$NS" ]; then

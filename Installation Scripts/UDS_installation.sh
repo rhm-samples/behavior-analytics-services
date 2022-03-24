@@ -41,7 +41,7 @@ EOF
 
 displayStepHeader 2 "Create the CatalogSource object"
 
-oc create -f ibm-operator-catalog.yaml &>>"${logFile}"
+oc create -f ibm-operator-catalog.yaml > "${logFile}"2>&1
 
 displayStepHeader 3 "Create a new project"
 createProject
@@ -61,7 +61,7 @@ EOF
 
 displayStepHeader 5 "Create the OperatorGroup object"
 
-oc create -f uds-og.yaml &>>"${logFile}"
+oc create -f uds-og.yaml > "${logFile}"2>&1
 
 displayStepHeader 6 "Create a Subscription object YAML file to subscribe a Namespace"
 
@@ -83,7 +83,7 @@ EOF
 
 displayStepHeader 7 "Create Subscription object"
 
-oc create -f cs-subscription.yaml &>>"${logFile}"
+oc create -f cs-subscription.yaml > "${logFile}"2>&1
 
 
 displayStepHeader 8 "Verify the Operator installation"
@@ -130,7 +130,7 @@ EOF
 
 displayStepHeader 10 "Create UDS Operand request"
 
-oc create -f uds-or.yaml &>>"${logFile}"
+oc create -f uds-or.yaml > "${logFile}"2>&1
 
 displayStepHeader 11 "Verify the Operator installation"
 #There should be user-data-services-operator.
@@ -181,7 +181,7 @@ EOF
 
 displayStepHeader 13 "Install the Deployment"
 
-oc create -f analytics-proxy.yaml &>>"${logFile}"
+oc create -f analytics-proxy.yaml > "${logFile}"2>&1
 
 #Sleep for 5 mins
 sleep 120

@@ -128,7 +128,7 @@ function createProject(){
       exit 0;
     fi
   else
-    oc new-project "${projectName}" &>>"${logFile}" 
+    oc new-project "${projectName}" > "${logFile}"2>&1
       if [ $? -ne 0 ];then
 	echoRed "FAILED: Project:${projectName} creation failed"
 	exit 1
