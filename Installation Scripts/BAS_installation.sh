@@ -4,7 +4,7 @@
 source bas-script-functions.bash
 source cr.properties
 
-requiredVersion="^\"4\.([0-9]{3,}|[6-9]|[1-9][0-9]?)?(\.[0-9]+.*)*$"
+requiredVersion="^\"4\.([0-9]{3,}|[3-9]|[1-9][0-9]?)?(\.[0-9]+.*)*$"
 requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
 ocpVersion="^\"4\.([0-9]{6,}|[6-9]?)?(\.[0-9]+.*)*$"
 ocpVersion45="^\"4\.5\.[0-9]+.*$"
