@@ -1,6 +1,8 @@
 
 #!/bin/bash
 . ./uds-script-functions.bash
+requiredVersion="^\"4\.([0-9]{6,}|[6-9]|[1-9][0-9]?)?(\.[0-9]+.*)*$"
+requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
 
 while getopts n:k:h--help: option; do
   case "${option}" in

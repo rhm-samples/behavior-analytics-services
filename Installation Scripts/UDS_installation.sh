@@ -4,7 +4,7 @@
 source uds-script-functions.bash
 source uds-cr.properties
 
-requiredVersion="^.*4\.([0-9]{3,}|[3-9]?)?(\.[0-9]+.*)*$"
+requiredVersion="^\"4\.([0-9]{6,}|[6-9]|[1-9][0-9]?)?(\.[0-9]+.*)*$"
 requiredServerVersion="^.*1\.([0-9]{16,}|[3-9]?)?(\.[0-9]+)*$"
 
 
