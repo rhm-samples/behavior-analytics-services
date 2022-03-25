@@ -43,7 +43,7 @@ EOF
 
 displayStepHeader 3 "Create the OperatorGroup object"
 
-oc create -f bas-og.yaml > "${logFile}"2>&1
+oc create -f bas-og.yaml >> "${logFile}" 2>&1
 
 displayStepHeader 4 "Create a Subscription object YAML file to subscribe a Namespace"
 
@@ -65,7 +65,7 @@ EOF
 
 displayStepHeader 5 "Create Subscription object"
 
-oc create -f bas-subscription.yaml > "${logFile}"2>&1
+oc create -f bas-subscription.yaml >> "${logFile}" 2>&1
 
 
 displayStepHeader 6 "Verify the Operator installation"
@@ -82,9 +82,9 @@ fi
 
 displayStepHeader 7 "Create a secret named database-credentials for PostgreSQL DB and grafana-credentials for Grafana"
 
-oc create secret generic database-credentials --from-literal=db_username=${dbuser} --from-literal=db_password=${dbpassword} -n "${projectName}" > "${logFile}"2>&1
+oc create secret generic database-credentials --from-literal=db_username=${dbuser} --from-literal=db_password=${dbpassword} -n "${projectName}" >> "${logFile}" 2>&1
 
-oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" > "${logFile}"2>&1
+oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" >> "${logFile}" 2>&1
 
 
 displayStepHeader 8 "Create the yaml for AnalyticsProxy instance."
@@ -123,7 +123,7 @@ EOF
 
 displayStepHeader 9 "Install the Deployment"
 
-oc create -f analytics-proxy.yaml > "${logFile}"2>&1
+oc create -f analytics-proxy.yaml >> "${logFile}" 2>&1
 
 #Sleep for 5 mins
 sleep 120

@@ -105,8 +105,8 @@ function checkOpenshiftVersion() {
   currentOpenshiftVersion="$(oc version -o json | jq .openshiftVersion)"
   echo OCP version is "$currentOpenshiftVersion"
   if [[ $currentOpenshiftVersion =~ $ocpVersion ]]; then
-    echo "install BAS 1.1.1"
-    basVersion=v1.1.0
+    echo "install BAS 1.1.4"
+    basVersion=v1.1.4
   elif [[ $currentOpenshiftVersion =~ $ocpVersion45 ]]; then
     echo "install BAS 1.0.0"
     basVersion=v1.0.0
@@ -128,7 +128,7 @@ function createProject(){
       exit 0;
     fi
   else
-    oc new-project "${projectName}" > "${logFile}"2>&1
+    oc new-project "${projectName}" >> "${logFile}" 2>&1
       if [ $? -ne 0 ];then
 	echoRed "FAILED: Project:${projectName} creation failed"
 	exit 1
