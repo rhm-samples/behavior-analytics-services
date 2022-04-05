@@ -28,7 +28,7 @@ function displayStepHeader() {
 }
 
 function stepLog() {
-  echo -e "STEP $1/12: $2"
+  echo -e "STEP $1/13: $2"
 }
 
 function validatePropertiesfile(){
@@ -105,8 +105,8 @@ function checkOpenshiftVersion() {
   currentOpenshiftVersion="$(oc version -o json | jq .openshiftVersion)"
   echo $currentOpenshiftVersion
   if [[ $currentOpenshiftVersion =~ $ocpVersion ]]; then
-    echo "install BAS 1.1.0"
-    basVersion=v1.1.0
+    echo "install BAS 1.1.1"
+    basVersion=v1.1.1
   elif [[ $currentOpenshiftVersion =~ $ocpVersion45 ]]; then
     echo "install BAS 1.0.0"
     basVersion=v1.0.0
@@ -176,4 +176,70 @@ function getGenerateAPIKey() {
 	   check_for_key=$(oc get secret bas-api-key --output="jsonpath={.data.apikey}" | base64 -d)
 	fi
 	echo "$check_for_key"
+}
+
+
+function createMTLS(){
+
+oc delete secret mtls-proxy-secret;
+
+echo "Creating mTLS update job yaml"
+
+temp_artifact_job=$(mktemp)
+cat <<EOF>> $temp_artifact_job
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: update-mtls
+  labels:
+    app: update-mtls
+    app.kubernetes.io/name: "update-mtls"
+spec:
+  template:
+    metadata:
+      labels:
+        app: update-mtls
+        app.kubernetes.io/name: "update-mtls"
+    spec:
+      restartPolicy: Never
+      securityContext: {}
+      serviceAccountName: behavior-analytics-services-operator
+      containers:
+        - resources: {}
+          name: oc-command-line
+          command:
+            - /bin/sh
+            - '-c'
+            - >
+              echo "Creating new mtls secret";
+              oc apply -f /mtls/update-mtls-secret.yaml;
+          imagePullPolicy: Always         
+          image: registry.connect.redhat.com/ibm-edge/growth-stack-base:mtls-proxy
+EOF
+
+echo "Applying mtls update job yaml"
+oc apply -n "${ns}" -f "${temp_artifact_job}"
+
+echoYellow "Job will take 1-2 mins. to execute."
+sleep  10 
+jobstaus=$(oc get pods |grep  update-mtls | awk '{print $3}')
+
+retryCount=6
+retries=0
+until [[ $retries -eq $retryCount || $jobstaus = "Completed" ]]; do
+		sleep 10
+		jobstaus=$(oc get pods |grep  update-mtls | awk '{print $3}')
+		retries=$((retries + 1))
+	done
+
+
+if [ "$jobstaus" = "Completed" ]; then
+    echoGreen "mTLS proxy secret created"
+else
+    echoRed "failed to create mTLS proxy secret"
+fi
+
+oc delete job update-mtls
+
+rm $temp_artifact_job
 }

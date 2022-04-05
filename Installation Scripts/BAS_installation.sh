@@ -108,6 +108,8 @@ oc create secret generic database-credentials --from-literal=db_username=${dbuse
 oc create secret generic grafana-credentials --from-literal=grafana_username=${grafanauser} --from-literal=grafana_password=${grafanapassword} -n "${projectName}" &>>"${logFile}"
 
 
+createMTLS
+
 displayStepHeader 9 "Create the yaml for AnalyticsProxy instance."
 
 
