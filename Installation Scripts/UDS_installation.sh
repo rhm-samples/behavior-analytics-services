@@ -177,6 +177,7 @@ spec:
     http_proxy: "${http_proxy}"
     https_proxy: "${https_proxy}"
     no_proxy: "${no_proxy}" 
+  db_type: internal
 EOF
 
 displayStepHeader 13 "Install the Deployment"
