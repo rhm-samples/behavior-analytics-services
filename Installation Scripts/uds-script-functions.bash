@@ -175,3 +175,19 @@ function getGenerateAPIKey() {
 	fi
 	echo "$check_for_key"
 }
+
+function getSubmoduleAPIKey() {
+
+	retryCount=10
+	retries=0
+	check_for_key=$(oc get secret submodule-service-key-secret --ignore-not-found)
+	until [[ $retries -eq $retryCount || $check_for_key != "" ]]; do
+		sleep 5
+		check_for_key=$(oc get secret submodule-service-key-secret --ignore-not-found)
+		retries=$((retries + 1))
+	done
+	if [[ $check_for_key != "" ]]; then
+	   check_for_key=$(oc get secret submodule-service-key-secret --output="jsonpath={.data.apikey}" | base64 -d)
+	fi
+	echo "$check_for_key"
+}
