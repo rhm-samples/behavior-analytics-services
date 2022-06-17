@@ -119,14 +119,15 @@ fi
 echoLine
 if [ "$flag_uds" = true ] ; then
     echoGreen "Event APIs tested successfully."
+    oc delete --ignore-not-found job event-scheduler-test
     oc create job --from=cronjob/event-scheduler event-scheduler-test
-    #oc delete job event-scheduler-test
 else
     echoRed "Event API(s) failing."
 fi
 
 echoLine
 ############ SUBMODULE APIS
+check_for_key=$(getSubmoduleAPIKey);
 submodule_endpoint_url=$(oc get routes submodule-endpoint -n "${projectName}" |awk 'NR==2 {print $2}')
 if [[ -z "$submodule_endpoint_url" || "$submodule_endpoint_url" == " " ]];then
       echoRed "Something went wrong...."
@@ -144,25 +145,17 @@ echoLine
 
 displayStepHeaderTest 4 "Testing Consent API"
 response=$(curl -fsS --location --request POST "$submodule_endpoint_url/cm/2/consents" \
+--header 'X-dpcm-tenant: gcdo' \
 --header "X-dpcm-apikey: $check_for_key" \
 --header 'Content-Type: application/json' \
---header "X-dpcm-addsystemidentifier: true" \
 -d '{
-	"state":"1",
-	"purpose_id":"1",
-	"consenter_id":"testscriptid_11",
-	"end_date": "2055-01-01T00:00:00.000Z",
-	"access_type_id": 1,
-	"attributes":[
-        {
-          "name":"EmailAddress",
-          "value":"johndoe@dummy.com"
-        },
-        {
-          "name":"ProductName",
-          "value":"Test Script"
-        }
-     ]
+    "written_authorization": false,
+    "consenter_id": "testuser@ibm.com",
+    "state": 1,
+    "purpose_id": 3,
+    "access_type_id": 1,
+    "data_id": 270,
+    "data_value": "testuser@ibm.com"
 }')
 
 if [[ $response != '' ]] ; then
@@ -179,7 +172,7 @@ response=$(curl -fsS --location --request POST "$submodule_endpoint_url/cm/2/sea
 --header "X-dpcm-apikey: $check_for_key" \
 --header 'Content-Type: application/json' \
 -d '{
-	"consenter_id": "testscriptid_11"
+	"consenter_id": "testuser@ibm.com"
 }')
 
 if [[ $response != '' ]] ; then
@@ -191,8 +184,8 @@ fi
 echoLine
 if [ "$flag_sm" = true ] ; then
     echoGreen "Submodule APIs tested successfully."
+    oc delete --ignore-not-found job submodule-scheduler-test
     oc create job --from=cronjob/submodule-scheduler submodule-scheduler-test
-    #oc delete job submodule-scheduler-test
 else    
     echoRed "Submodule API(s) failing"
 fi
