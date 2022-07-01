@@ -69,7 +69,7 @@ oc create -f bas-subscription.yaml &>>"${logFile}"
 
 
 displayStepHeader 6 "Verify the Operator installation"
-#There should be behavior-analytics-services-operator-certified.v1.1.4
+#There should be behavior-analytics-services-operator-certified.v1.1.6
 
 check_for_csv_success=$(checkClusterServiceVersionSucceeded 2>&1)
 
